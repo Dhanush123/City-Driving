@@ -27,13 +27,12 @@ exports.handler = function(event, context, callback) {
 
 var handlers = {
     'NewSession': function () {
-        this.attributes['speechOutput'] = "Say something";
-//            'Welcome to ' + SKILL_NAME + '. You can ask a question like, what is the ' +
-//            'distance from San Francisco to New York City? Please tell me two cities you would like to find a driving distance between.';
-        
         // If the user either does not reply to the welcome message or says something that is not
         // understood, they will be prompted again with this text.
-        this.attributes['repromptSpeech'] = 'To find a driving distance, say: what is the distance from City 1 to City 2?';
+        this.attributes['speechOutput'] = 'Welcome to ' + SKILL_NAME + '. You can ask a question like, what is the ' +
+            'distance from San Francisco to New York City? Please tell me two cities you would like to find a driving distance between.';
+
+        this.attributes['repromptSpeech'] = 'To find a driving distance, say something like: what is the distance from City 1 to City 2?';
         this.emit(':ask', this.attributes['speechOutput'], this.attributes['repromptSpeech'])
     },
     'GetDistance': function() {
@@ -60,6 +59,13 @@ var handlers = {
             
       });
     },
+    'AMAZON.HelpIntent': function() {
+        // If the user either does not reply to the welcome message or says something that is not
+        // understood, they will be prompted again with this text.
+        this.attributes['repromptSpeech'] = 'You can ask a question like, what is the ' +
+            'distance from Seattle to Portland? Please tell me two cities you would like to find a driving distance between.';
+        this.emit(':ask', this.attributes['speechOutput'], this.attributes['repromptSpeech'])
+    },
     'AMAZON.StopIntent': function () {
         this.emit('SessionEndedRequest');
     },
@@ -70,7 +76,3 @@ var handlers = {
         this.emit(':tell', 'Goodbye!');
     }
 };
-
-
-
-
