@@ -1,0 +1,9 @@
+GetDistance {Start} to {Finish}
+GetDistance what is the distance from {Start} to {Finish}
+GetDistance what is the distance between {Start} and {Finish}
+GetDistance find the distance from {Start} to {Finish}
+GetDistance get the distance from {Start} to {Finish}
+GetDistance how far is {Start} from {Finish}
+GetDistance how close is {Start} to {Finish}
+GetDistance what is the driving distance from {Start} to {Finish}
+GetDistance how much will I have to drive to get from {Start} to {Finish}
