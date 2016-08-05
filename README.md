@@ -2,7 +2,8 @@
 
 This is an Amazon Alexa skill.
 
-It's relatively simple, it uses the Google Maps API to tell the user the driving distance and time between any two U.S. cities. It also makes uses of the Alexa Skills Kit SDK for Node.js.
+It's relatively simple, it uses the Google Maps API to tell the user the driving distance and time between any two U.S. cities. 
+It also makes uses of the Alexa Skills Kit SDK for Node.js.
 
 Relevant resources:
 https://github.com/moshen/node-googlemaps
