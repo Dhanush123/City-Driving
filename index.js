@@ -36,28 +36,35 @@ var handlers = {
         this.emit(':ask', this.attributes['speechOutput'], this.attributes['repromptSpeech'])
     },
     'GetDistance': function() {
-        var distSlot1 = this.event.request.intent.slots.Start.value;
-        var origin = distSlot1.toString();
-        var distSlot2 = this.event.request.intent.slots.Finish.value;
-        var destination = distSlot2.toString();
-        var self = this;
-        var params = {
-        origins: origin,
-        destinations: destination,
-        units: 'imperial'
-        };
-        gmAPI.distance(params, function(err, result){
-        console.log("err: "+err);
-        console.log("result: "+result);
-        console.log("is result ok: "+result.status);
-        var arry = result.rows[0].elements;
-        console.log("distance is: "+arry[0].distance.text);  
-        console.log("time is: "+arry[0].duration.text);   
-        var totalResult = "The distance from " + params.origins + " to " + params.destinations + " is " + arry[0].distance.text + " and will take approximately " + arry[0].duration.text;
+        var distSlot1 = this.event.request.intent.slots.Start.value; 
+        var distSlot2 = this.event.request.intent.slots.Finish.value; 
+        
+        if(distSlot1!=null && distSlot1!=undefined && distSlot2!=undefined && distSlot2!=null){
 
-                self.emit(':tell',totalResult);
-            
-      });
+            console.log(distSlot1+"-->"+distSlot2); 
+
+            var self = this;
+            var params = {
+            origins: distSlot1,
+            destinations: distSlot2,
+            units: 'imperial'
+            };
+            gmAPI.distance(params, function(err, result){
+            console.log("err: "+err);
+            console.log("result: "+result);
+            console.log("is result ok: "+result.status);
+            var arry = result.rows[0].elements;
+            console.log("distance is: "+arry[0].distance.text);  
+            console.log("time is: "+arry[0].duration.text);   
+            var totalResult = "The distance from " + params.origins + " to " + params.destinations + " is " + arry[0].distance.text + " and will take approximately " + arry[0].duration.text;
+
+            self.emit(':tell',totalResult);
+
+          });
+        }
+        else{
+          this.emit('Unhandled');    
+        }
     },
     'AMAZON.HelpIntent': function() {
         // If the user either does not reply to the welcome message or says something that is not
@@ -74,5 +81,9 @@ var handlers = {
     },
     'SessionEndedRequest':function () {
         this.emit(':tell', 'Goodbye!');
+    },
+    'Unhandled': function() {
+        this.emit(':tell', 'Sorry, I was unable to understand your request. Please try again.');
+        this.emit('SessionEndedRequest');
     }
 };
