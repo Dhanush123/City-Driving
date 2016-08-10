@@ -8,7 +8,7 @@ var APP_ID = 'PUT APP ID HERE'; //OPTIONAL: replace with 'amzn1.echo-sdk-ams.app
 var SKILL_NAME = 'City Driving';
 
 var publicConfig = {
-    key: 'PUT GOOGLE MAPS SERVER KEY HERE',
+    key: 'AIzaSyA3SKRW7A2q4U8xYfbkVlAKZ9zD1zltTGw',
     stagger_time:       100, // for elevationPath
     encode_polylines:   false,
     secure:             true, // use https
@@ -16,7 +16,6 @@ var publicConfig = {
 };
 
 var gmAPI = new GoogleMapsAPI(publicConfig);
-
 
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -53,12 +52,19 @@ var handlers = {
             console.log("err: "+err);
             console.log("result: "+result);
             console.log("is result ok: "+result.status);
+                
             var arry = result.rows[0].elements;
-            console.log("distance is: "+arry[0].distance.text);  
-            console.log("time is: "+arry[0].duration.text);   
-            var totalResult = "The distance from " + params.origins + " to " + params.destinations + " is " + arry[0].distance.text + " and will take approximately " + arry[0].duration.text;
+                
+            if(arry[0].distance==undefined || arry[0].duration==undefined){
+                self.emit('Unhandled'); 
+            }
+            else{
+                console.log("distance is: "+arry[0].distance.text);  
+                console.log("time is: "+arry[0].duration.text);   
+                var totalResult = "The distance from " + params.origins + " to " + params.destinations + " is " + arry[0].distance.text + " and will take approximately " + arry[0].duration.text;
 
-            self.emit(':tell',totalResult);
+                self.emit(':tell',totalResult);
+            }
 
           });
         }
@@ -83,7 +89,7 @@ var handlers = {
         this.emit(':tell', 'Goodbye!');
     },
     'Unhandled': function() {
-        this.emit(':tell', 'Sorry, I was unable to understand your request. Please try again.');
+        this.emit(':tell', 'Sorry, I was unable to understand and process your request. Please try again.');
         this.emit('SessionEndedRequest');
     }
 };
