@@ -1,9 +1,10 @@
 'use strict';
 
 var Alexa = require('alexa-sdk');
+var should = require('should');
 var GoogleMapsAPI = require('googlemaps');
 
-var APP_ID = 'amzn1.ask.skill.2044e42b-de5b-4195-99e5-12294a464665'; //OPTIONAL: replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
+var APP_ID = 'PUT APP ID HERE'; //OPTIONAL: replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
 var SKILL_NAME = 'City Driving';
 
 var publicConfig = {
@@ -25,17 +26,20 @@ exports.handler = function(event, context, callback) {
 
 var handlers = {
     'NewSession': function () {
-        console.log("went in newsession function");
-        this.emit('GetDistance');
+        // If the user either does not reply to the welcome message or says something that is not
+        // understood, they will be prompted again with this text.
+        this.attributes['speechOutput'] = 'Welcome to ' + SKILL_NAME + '. You can ask a question like, what is the ' +
+            'distance from San Francisco to New York City? Please tell me two cities you would like to find a driving distance between.';
+
+        this.attributes['repromptSpeech'] = 'To find a driving distance, say something like: what is the distance from City 1 to City 2?';
+        this.emit(':ask', this.attributes['speechOutput'], this.attributes['repromptSpeech'])
     },
-    'GetDistance': function () {
-        console.log("went in getdistance function");
+    'GetDistance': function() {
+        var distSlot1 = this.event.request.intent.slots.Start.value; 
+        var distSlot2 = this.event.request.intent.slots.Finish.value; 
         
-        if(this.event.request.intent!=undefined && this.event.request.intent!=undefined){
-            
-            var distSlot1 = this.event.request.intent.slots.Start.value; 
-            var distSlot2 = this.event.request.intent.slots.Finish.value; 
-            
+        if(distSlot1!=null && distSlot1!=undefined && distSlot2!=undefined && distSlot2!=null){
+
             console.log(distSlot1+"-->"+distSlot2); 
 
             var self = this;
@@ -65,12 +69,7 @@ var handlers = {
           });
         }
         else{
-        // If the user either does not reply to the welcome message or says something that is not
-        // understood, they will be prompted again with this text.
-        this.attributes['speechOutput'] = 'Welcome to ' + SKILL_NAME + '. You can ask a question like, what is the ' + 'distance from San Francisco to New York City? Please tell me two cities you would like to find a driving distance between.';
-
-        this.attributes['repromptSpeech'] = 'To find a driving distance, say something like: what is the distance from City 1 to City 2?';
-        this.emit(':ask', this.attributes['speechOutput'], this.attributes['repromptSpeech'])  
+          this.emit('Unhandled');    
         }
     },
     'AMAZON.HelpIntent': function() {
